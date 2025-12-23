@@ -16,8 +16,8 @@ import Affjax.Web as AXW
 import Cardano.Capabilities.Transaction.Env (HasTransactionEnv)
 import Cardano.Capabilities.Transaction.Types (AddWitAndSubmitParams(..), Interaction(..), UserAddresses(..))
 import Cardano.Wallet.Cip30 (Api)
-import Capabilities.MonadCIP30 (class MonadCIP30)
-import Capabilities.MonadCIP30 as Cip30
+import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30)
+import Cardano.Capabilities.Wallet.MonadCIP30 as Cip30
 import Data.Argonaut.Decode (decodeJson)
 import Data.Argonaut.Decode.Class (class DecodeJson, class DecodeJsonField)
 import Data.Argonaut.Encode (encodeJson)

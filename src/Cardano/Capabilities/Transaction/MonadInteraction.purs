@@ -10,7 +10,7 @@ import Prelude
 
 import Cardano.Capabilities.Transaction.Env (HasTransactionEnv)
 import Cardano.Wallet.Cip30 (Api)
-import Capabilities.MonadCIP30 (class MonadCIP30)
+import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30)
 import Data.Argonaut.Decode.Class (class DecodeJson, class DecodeJsonField)
 import Data.Argonaut.Encode.Class (class EncodeJson)
 import Data.Either (Either)

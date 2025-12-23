@@ -4,15 +4,16 @@ package:
     - affjax
     - affjax-web
     - argonaut-aeson-generic
+    - cardano-serialization-lib
     - cip30
     - cip30-typesafe
     - effect
     - foreign
     - halogen
-    - halogen-cardano-wallet-connect-component
     - prelude
     - profunctor-lenses
     - transformers
+    - tuples
 
   test:
     main: Test.Main
@@ -31,6 +32,3 @@ workspace:
     cip30:
       git: https://github.com/mariusgeorgescu/purescript-cip30.git
       ref: fb4b90fcca1f57edaacd6405965bf245d3504583
-    halogen-cardano-wallet-connect-component:
-      git: https://github.com/mariusgeorgescu/halogen-cardano-wallet-connect-component.git
-      ref: v1.0.2
