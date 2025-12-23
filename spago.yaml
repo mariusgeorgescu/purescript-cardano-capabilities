@@ -14,7 +14,7 @@ package:
     - prelude
     - profunctor-lenses
     - transformers
-    - traversable
+    - foldable-traversable
     - tuples
 
   test:
