@@ -1,4 +1,11 @@
 -- | Capability type class for Cardano transaction interactions
+-- |
+-- | This module provides a marker type class and standalone functions.
+-- | To use, just declare an empty instance for your monad:
+-- |
+-- | ```purescript
+-- | instance MonadInteraction AppM
+-- | ```
 module Cardano.Capabilities.Transaction.MonadInteraction
   ( class MonadInteraction
   , buildTransaction
@@ -6,51 +13,53 @@ module Cardano.Capabilities.Transaction.MonadInteraction
   , signTransaction
   ) where
 
-import Prelude
-
 import Cardano.Capabilities.Transaction.Default (buildTransactionDefault, signTransactionDefault, submitTransactionDefault)
 import Cardano.Capabilities.Transaction.Env (HasTransactionEnv)
-import Cardano.Wallet.Cip30 (Api)
 import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30)
+import Cardano.Wallet.Cip30 (Api)
 import Data.Argonaut.Decode.Class (class DecodeJson, class DecodeJsonField)
 import Data.Argonaut.Encode.Class (class EncodeJson)
 import Data.Either (Either)
-import Effect.Aff.Class (class MonadAff)
 import Halogen (HalogenM)
 
--- | Capability for building, signing, and submitting Cardano transactions
+-- | Marker type class for transaction interaction capability.
 -- |
--- | Type parameter `a` represents the action type (e.g., DelegationAction)
--- | Type parameter `m` represents the monad
-class
-  ( Monad m
-  , MonadAff m
-  , DecodeJson a
-  , EncodeJson a
-  , DecodeJsonField a
-  , MonadCIP30 m
-  ) <= MonadInteraction a m where
-  -- | Build an unsigned transaction from an action
-  -- | Returns the transaction CBOR as a hex string
-  buildTransaction :: forall r. HasTransactionEnv r -> Api -> a -> m (Either String String)
-  
-  -- | Submit a signed transaction
-  -- | Takes the unsigned transaction CBOR and the witness set
-  -- | Returns the transaction hash
-  submitTransaction :: forall r. HasTransactionEnv r -> String -> String -> m (Either String String)
-  
-  -- | Sign an unsigned transaction
-  -- | Returns the witness set as a hex string
-  signTransaction :: Api -> String -> m (Either String String)
+-- | Declare an empty instance for your monad:
+-- | ```purescript
+-- | instance MonadInteraction AppM
+-- | ```
+-- | Then use the standalone functions from this module.
+class MonadCIP30 m <= MonadInteraction m
 
--- | Instance for HalogenM - allows using MonadInteraction in Halogen components
--- | Works for any action type `a` that has the required JSON instances
-instance monadInteractionHalogenM :: 
-  ( MonadAff m
-  , DecodeJson a
-  , EncodeJson a
-  , DecodeJsonField a
-  ) => MonadInteraction a (HalogenM st act slots msg m) where
-  buildTransaction = buildTransactionDefault
-  submitTransaction = submitTransactionDefault
-  signTransaction = signTransactionDefault
+-- | Lift MonadInteraction through HalogenM
+instance monadInteractionHalogenM :: (MonadCIP30 m, MonadInteraction m) => MonadInteraction (HalogenM st act slots msg m)
+
+-- Standalone functions (using default implementations)
+
+-- | Build an unsigned transaction from an action
+-- | Returns the transaction CBOR as a hex string
+buildTransaction :: 
+  forall m a r. 
+  MonadInteraction m => 
+  EncodeJson a => 
+  DecodeJson a => 
+  DecodeJsonField a =>
+  HasTransactionEnv r -> Api -> a -> m (Either String String)
+buildTransaction = buildTransactionDefault
+
+-- | Submit a signed transaction
+-- | Takes the unsigned transaction CBOR and the witness set
+-- | Returns the transaction hash
+submitTransaction :: 
+  forall m r. 
+  MonadInteraction m => 
+  HasTransactionEnv r -> String -> String -> m (Either String String)
+submitTransaction = submitTransactionDefault
+
+-- | Sign an unsigned transaction
+-- | Returns the witness set as a hex string
+signTransaction :: 
+  forall m. 
+  MonadInteraction m => 
+  Api -> String -> m (Either String String)
+signTransaction = signTransactionDefault
