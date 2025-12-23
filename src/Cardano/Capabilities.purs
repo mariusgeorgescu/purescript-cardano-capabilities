@@ -30,7 +30,7 @@ module Cardano.Capabilities
   ) where
 
 -- Wallet
-import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30, enable, enableWallet, getApiVersion, getAvailableWallets, getBalance, getChangeAddress, getCollateral, getExtensions, getIcon, getName, getNativeAssetsBalance, getNativeCoinBalance, getNativeCoinBalanceString, getNetworkId, getNetworkName, getRewardAddresses, getSupportedExtensions, getTheAvailableWallets, getUnusedAddresses, getUsedAddresses, getUserAddresses, getUserFirstAddressBech32, getUtxos, isEnabled, isWalletAvailable, signData, signTx, submitTx)
+import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30, enable, getApiVersion, getAvailableWallets, getBalance, getChangeAddress, getCollateral, getExtensions, getIcon, getName, getNetworkId, getRewardAddresses, getSupportedExtensions, getUnusedAddresses, getUsedAddresses, getUtxos, isEnabled, isWalletAvailable, signData, signTx, submitTx)
 
 -- Transaction
 import Cardano.Capabilities.Transaction.Default (buildTransactionDefault, buildTransactionFromInteraction, signTransactionDefault, submitTransactionDefault)

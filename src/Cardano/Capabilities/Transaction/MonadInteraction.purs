@@ -8,6 +8,7 @@ module Cardano.Capabilities.Transaction.MonadInteraction
 
 import Prelude
 
+import Cardano.Capabilities.Transaction.Default (buildTransactionDefault, signTransactionDefault, submitTransactionDefault)
 import Cardano.Capabilities.Transaction.Env (HasTransactionEnv)
 import Cardano.Wallet.Cip30 (Api)
 import Cardano.Capabilities.Wallet.MonadCIP30 (class MonadCIP30)
@@ -15,6 +16,7 @@ import Data.Argonaut.Decode.Class (class DecodeJson, class DecodeJsonField)
 import Data.Argonaut.Encode.Class (class EncodeJson)
 import Data.Either (Either)
 import Effect.Aff.Class (class MonadAff)
+import Halogen (HalogenM)
 
 -- | Capability for building, signing, and submitting Cardano transactions
 -- |
@@ -41,3 +43,14 @@ class
   -- | Returns the witness set as a hex string
   signTransaction :: Api -> String -> m (Either String String)
 
+-- | Instance for HalogenM - allows using MonadInteraction in Halogen components
+-- | Works for any action type `a` that has the required JSON instances
+instance monadInteractionHalogenM :: 
+  ( MonadAff m
+  , DecodeJson a
+  , EncodeJson a
+  , DecodeJsonField a
+  ) => MonadInteraction a (HalogenM st act slots msg m) where
+  buildTransaction = buildTransactionDefault
+  submitTransaction = submitTransactionDefault
+  signTransaction = signTransactionDefault

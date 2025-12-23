@@ -11,7 +11,6 @@ import Affjax.ResponseFormat as AXRF
 import Affjax.Web as AXW
 import Cardano.Capabilities.Query.Env (HasQueryEnv)
 import Cardano.Capabilities.Query.Types (PoolInfo)
-import Control.Monad.Reader.Class (class MonadAsk, ask)
 import Data.Argonaut.Decode (decodeJson)
 import Data.Either (Either(..))
 import Data.HTTP.Method (Method(..))
@@ -25,10 +24,8 @@ import Foreign (ForeignError(..), unsafeFromForeign)
 fetchPoolInfoDefault ::
   forall m r.
   MonadAff m =>
-  MonadAsk (HasQueryEnv r) m =>
-  String -> m (Either String PoolInfo)
-fetchPoolInfoDefault poolId = do
-  env <- ask
+  HasQueryEnv r -> String -> m (Either String PoolInfo)
+fetchPoolInfoDefault env poolId = do
   let
     url = env.poolInfoURL poolId
   let
@@ -53,4 +50,3 @@ fetchPoolInfoDefault poolId = do
       pure $ Left $ unsafeFromForeign resp.body
     Left e -> do
       pure $ Left $ AX.printError e
-
