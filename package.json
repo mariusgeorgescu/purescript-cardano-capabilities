@@ -1,0 +1,27 @@
+{
+  "name": "purescript-cardano-capabilities",
+  "version": "0.1.0",
+  "description": "PureScript capability type classes for Cardano blockchain interactions",
+  "main": "index.js",
+  "scripts": {
+    "build": "spago build",
+    "test": "spago test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mariusgeorgescu/purescript-cardano-capabilities.git"
+  },
+  "keywords": [
+    "purescript",
+    "cardano",
+    "blockchain",
+    "capabilities"
+  ],
+  "author": "Marius Georgescu",
+  "license": "MIT",
+  "devDependencies": {
+    "purescript": "^0.15.15",
+    "spago": "^0.93.29"
+  }
+}
+

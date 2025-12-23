@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+bower_components/
+.spago/
+
+# Build outputs
+output/
+.psci_modules/
+.cache/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Lock files (optional - some prefer to commit these)
+# package-lock.json
+# spago.lock
+
+# Temp files
+*.swp
+*.swo
+*~
+

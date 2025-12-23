@@ -1,0 +1,36 @@
+package:
+  name: cardano-capabilities
+  dependencies:
+    - affjax
+    - affjax-web
+    - argonaut-aeson-generic
+    - cip30
+    - cip30-typesafe
+    - effect
+    - foreign
+    - halogen
+    - halogen-cardano-wallet-connect-component
+    - prelude
+    - profunctor-lenses
+    - transformers
+
+  test:
+    main: Test.Main
+    dependencies: []
+
+workspace:
+  packageSet:
+    registry: 68.9.0
+  extraPackages:
+    cardano-serialization-lib:
+      git: https://github.com/mariusgeorgescu/purescript-cardano-serialization-lib.git
+      ref: 7d6c664b125ce8c3cc441912fb8daf72294c17e7
+    cip30-typesafe:
+      git: https://github.com/mariusgeorgescu/purescript-cip30-typesafe.git
+      ref: a8cf31f14663b2737387ed26090516362c69d0f3
+    cip30:
+      git: https://github.com/mariusgeorgescu/purescript-cip30.git
+      ref: fb4b90fcca1f57edaacd6405965bf245d3504583
+    halogen-cardano-wallet-connect-component:
+      git: https://github.com/mariusgeorgescu/halogen-cardano-wallet-connect-component.git
+      ref: v1.0.2
