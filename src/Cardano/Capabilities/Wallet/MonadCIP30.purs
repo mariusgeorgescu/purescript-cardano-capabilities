@@ -28,13 +28,23 @@ module Cardano.Capabilities.Wallet.MonadCIP30
   , isEnabled
   , getApiVersion
   , getSupportedExtensions
+  , enableWallet
+  , getNetworkName
+  , getNativeCoinBalance
+  , getNativeCoinBalanceString
+  , getUserFirstAddressBech32
+  , getTheAvailableWallets
   ) where
 
 import Prelude
 
 import Cardano.Wallet.Cip30 (Api, Bytes, Cbor, DataSignature, Extension, NetworkId, Paginate, WalletName)
 import Cardano.Wallet.Cip30 as Cip30
-import Data.Maybe (Maybe)
+import Csl as Csl
+import Data.Array (zip, (!!))
+import Data.Maybe (Maybe(..), fromMaybe, maybe)
+import Data.Traversable (sequence)
+import Data.Tuple (Tuple)
 import Effect.Aff.Class (class MonadAff, liftAff)
 import Effect.Class (liftEffect)
 import Halogen (HalogenM)
@@ -132,3 +142,52 @@ getApiVersion = liftEffect <<< Cip30.getApiVersion
 -- | Get supported extensions for a wallet
 getSupportedExtensions :: forall m. MonadCIP30 m => WalletName -> m (Array Extension)
 getSupportedExtensions = liftEffect <<< Cip30.getSupportedExtensions
+
+-- Helper utility functions
+
+-- | Enable a wallet with default CIP-30 extensions
+enableWallet :: forall m. MonadCIP30 m => WalletName -> m Api
+enableWallet wname = enable wname [ { cip: 30 } ]
+
+-- | Get human-readable network name
+getNetworkName :: forall m. MonadCIP30 m => Api -> m String
+getNetworkName api = do
+  id <- getNetworkId api
+  pure
+    $ case id of
+        1 -> "Mainnet"
+        0 -> "Preview"
+        2 -> "Preprod"
+        _ -> "Unknown"
+
+-- | Get ADA balance as BigNum (in lovelace)
+getNativeCoinBalance :: forall m. MonadCIP30 m => Api -> m Csl.BigNum
+getNativeCoinBalance api = do
+  walletBalanceCbor <- getBalance api
+  let
+    balance = fromMaybe Csl.value.zero $ Csl.value.fromHex walletBalanceCbor
+  pure $ Csl.bigNum.divFloor (Csl.value.coin balance) (maybe Csl.bigNum.one identity (Csl.bigNum.fromStr "1000000"))
+
+-- | Get ADA balance as formatted string with "₳" symbol
+getNativeCoinBalanceString :: forall m. MonadCIP30 m => Api -> m String
+getNativeCoinBalanceString api = do
+  adaBalance <- getNativeCoinBalance api
+  pure $ (Csl.bigNum.toStr adaBalance) <> " ₳"
+
+-- | Get first address in Bech32 format
+getUserFirstAddressBech32 :: forall m. MonadCIP30 m => Api -> m String
+getUserFirstAddressBech32 api = do
+  userAddresses <- getUsedAddresses api Nothing
+  pure
+    $ case userAddresses !! 0 of
+        Just firstAddrHex -> case Csl.address.fromHex firstAddrHex of
+          Just firstAddr -> Csl.address.toBech32 firstAddr Nothing
+          Nothing -> ""
+        Nothing -> ""
+
+-- | Get available wallets with icons
+getTheAvailableWallets :: forall m. MonadCIP30 m => m (Array (Tuple WalletName String))
+getTheAvailableWallets = do
+  ws <- getAvailableWallets
+  is <- sequence $ map getIcon ws
+  pure $ zip ws is

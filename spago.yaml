@@ -4,6 +4,7 @@ package:
     - affjax
     - affjax-web
     - argonaut-aeson-generic
+    - arrays
     - cardano-serialization-lib
     - cip30
     - cip30-typesafe
@@ -13,6 +14,7 @@ package:
     - prelude
     - profunctor-lenses
     - transformers
+    - traversable
     - tuples
 
   test:
