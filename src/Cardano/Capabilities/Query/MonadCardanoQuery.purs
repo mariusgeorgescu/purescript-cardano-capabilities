@@ -34,8 +34,10 @@ instance monadCardanoQueryHalogenM :: (MonadAff m, MonadCardanoQuery m) => Monad
 
 -- | Fetch pool information by pool ID
 -- | Returns pool metadata, stake info, and performance metrics
-fetchPoolInfo :: 
-  forall m r. 
-  MonadCardanoQuery m => 
-  HasQueryEnv r -> String -> m (Either String PoolInfo)
+fetchPoolInfo
+  :: forall m r
+   . MonadCardanoQuery m
+  => HasQueryEnv r
+  -> String
+  -> m (Either String PoolInfo)
 fetchPoolInfo = fetchPoolInfoDefault

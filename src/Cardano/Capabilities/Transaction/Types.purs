@@ -20,8 +20,7 @@ import Data.Maybe (Maybe)
 import Data.Newtype (class Newtype)
 
 -- | User wallet addresses for transaction building
-newtype UserAddresses
-  = UserAddresses
+newtype UserAddresses = UserAddresses
   { usedAddresses :: Array String
   , changeAddress :: String
   , stakeAddresses :: Array String
@@ -36,20 +35,19 @@ instance decodeJsonUserAddresses :: DecodeJson UserAddresses where
 derive instance genericUserAddresses :: Generic UserAddresses _
 derive instance newtypeUserAddresses :: Newtype UserAddresses _
 
-_UserAddresses ::
-  Iso' UserAddresses
-    { usedAddresses :: Array String
-    , changeAddress :: String
-    , stakeAddresses :: Array String
-    }
+_UserAddresses
+  :: Iso' UserAddresses
+       { usedAddresses :: Array String
+       , changeAddress :: String
+       , stakeAddresses :: Array String
+       }
 _UserAddresses = _Newtype
 
 --------------------------------------------------------------------------------
 
 -- | Interaction data structure for transaction building
 -- | Wraps an action with user addresses and optional recipient
-newtype Interaction a
-  = Interaction
+newtype Interaction a = Interaction
   { action :: a
   , userAddresses :: UserAddresses
   , recipient :: Maybe String

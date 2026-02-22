@@ -19,15 +19,15 @@
 module Cardano.Capabilities
   ( -- Wallet Capability (CIP-30)
     module Cardano.Capabilities.Wallet.MonadCIP30
-    -- Transaction Capability
+  -- Transaction Capability
   , module Cardano.Capabilities.Transaction.MonadInteraction
   , module Cardano.Capabilities.Transaction.Types
   , module Cardano.Capabilities.Transaction.Env
-    -- Query Capability
+  -- Query Capability
   , module Cardano.Capabilities.Query.MonadCardanoQuery
   , module Cardano.Capabilities.Query.Types
   , module Cardano.Capabilities.Query.Env
-    -- Shared Types
+  -- Shared Types
   , module Cardano.Capabilities.Types
   ) where
 

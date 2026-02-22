@@ -21,10 +21,12 @@ import Foreign (ForeignError(..), unsafeFromForeign)
 
 -- | Default implementation for fetching pool information
 -- | Makes HTTP request to the pool info endpoint
-fetchPoolInfoDefault ::
-  forall m r.
-  MonadAff m =>
-  HasQueryEnv r -> String -> m (Either String PoolInfo)
+fetchPoolInfoDefault
+  :: forall m r
+   . MonadAff m
+  => HasQueryEnv r
+  -> String
+  -> m (Either String PoolInfo)
 fetchPoolInfoDefault env poolId = do
   let
     url = env.poolInfoURL poolId

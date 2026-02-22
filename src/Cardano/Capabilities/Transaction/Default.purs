@@ -30,51 +30,59 @@ import Effect.Aff.Class (class MonadAff, liftAff)
 import Foreign (ForeignError(..), unsafeFromForeign)
 
 -- | Default implementation for signing transactions
-signTransactionDefault ::
-  forall m.
-  MonadAff m =>
-  MonadCIP30 m =>
-  Api -> String -> m (Either String String)
+signTransactionDefault
+  :: forall m
+   . MonadAff m
+  => MonadCIP30 m
+  => Api
+  -> String
+  -> m (Either String String)
 signTransactionDefault api unsignedTxCbor = do
   signedTx <- Cip30.signTx api unsignedTxCbor true
   pure $ Right signedTx
 
 -- | Default implementation for building transactions
 -- | Fetches wallet addresses and delegates to buildTransactionFromInteraction
-buildTransactionDefault ::
-  forall a m r.
-  MonadAff m =>
-  EncodeJson a =>
-  DecodeJson a =>
-  DecodeJsonField a =>
-  MonadCIP30 m =>
-  HasTransactionEnv r -> Api -> a -> m (Either String String)
+buildTransactionDefault
+  :: forall a m r
+   . MonadAff m
+  => EncodeJson a
+  => DecodeJson a
+  => DecodeJsonField a
+  => MonadCIP30 m
+  => HasTransactionEnv r
+  -> Api
+  -> a
+  -> m (Either String String)
 buildTransactionDefault env api a = do
   usedAddresses <- Cip30.getUsedAddresses api Nothing
   changeAddress <- Cip30.getChangeAddress api
   stakeAddresses <- Cip30.getRewardAddresses api
-  let interaction =
-        Interaction
-          { action: a
-          , recipient: Nothing
-          , userAddresses:
-              UserAddresses
-                { usedAddresses: usedAddresses
-                , changeAddress: changeAddress
-                , stakeAddresses: stakeAddresses
-                }
-          }
+  let
+    interaction =
+      Interaction
+        { action: a
+        , recipient: Nothing
+        , userAddresses:
+            UserAddresses
+              { usedAddresses: usedAddresses
+              , changeAddress: changeAddress
+              , stakeAddresses: stakeAddresses
+              }
+        }
   buildTransactionFromInteraction env interaction
 
 -- | Build transaction from an Interaction structure
 -- | Makes HTTP request to the build endpoint
-buildTransactionFromInteraction ::
-  forall a m r.
-  MonadAff m =>
-  EncodeJson a =>
-  DecodeJson a =>
-  DecodeJsonField a =>
-  HasTransactionEnv r -> Interaction a -> m (Either String String)
+buildTransactionFromInteraction
+  :: forall a m r
+   . MonadAff m
+  => EncodeJson a
+  => DecodeJson a
+  => DecodeJsonField a
+  => HasTransactionEnv r
+  -> Interaction a
+  -> m (Either String String)
 buildTransactionFromInteraction env interaction = do
   let
     req =
@@ -101,10 +109,13 @@ buildTransactionFromInteraction env interaction = do
 
 -- | Default implementation for submitting transactions
 -- | Makes HTTP request to the submit endpoint
-submitTransactionDefault ::
-  forall m r.
-  MonadAff m =>
-  HasTransactionEnv r -> String -> String -> m (Either String String)
+submitTransactionDefault
+  :: forall m r
+   . MonadAff m
+  => HasTransactionEnv r
+  -> String
+  -> String
+  -> m (Either String String)
 submitTransactionDefault env unsignedTxCbor signedTx = do
   let
     req =

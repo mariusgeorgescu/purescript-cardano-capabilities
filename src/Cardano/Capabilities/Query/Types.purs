@@ -18,8 +18,7 @@ import Data.Newtype (class Newtype)
 import Data.Number as Number
 
 -- | Pool information extracted from API response
-newtype PoolInfo
-  = PoolInfo
+newtype PoolInfo = PoolInfo
   { margin :: Maybe Number
   , fixed_cost :: Maybe Number
   , pledge :: Maybe Number
@@ -37,8 +36,7 @@ derive instance genericPoolInfo :: Generic PoolInfo _
 derive instance newtypePoolInfo :: Newtype PoolInfo _
 
 -- | Raw pool metadata from API
-newtype PoolMetaJson
-  = PoolMetaJson
+newtype PoolMetaJson = PoolMetaJson
   { name :: Maybe String
   , ticker :: Maybe String
   , homepage :: Maybe String
@@ -52,8 +50,7 @@ instance decodeJsonPoolMetaJson :: DecodeJson PoolMetaJson where
   decodeJson = genericDecodeAeson Argonaut.defaultOptions
 
 -- | Raw pool data from API
-newtype PoolData
-  = PoolData
+newtype PoolData = PoolData
   { pool_id_bech32 :: Maybe String
   , margin :: Maybe Number
   , fixed_cost :: Maybe Number
@@ -73,8 +70,7 @@ instance decodeJsonPoolData :: DecodeJson PoolData where
   decodeJson = genericDecodeAeson Argonaut.defaultOptions
 
 -- | Complete API response wrapper
-newtype PoolInfoMaestroResponse
-  = PoolInfoMaestroResponse
+newtype PoolInfoMaestroResponse = PoolInfoMaestroResponse
   { data :: Maybe PoolData
   }
 

@@ -1,0 +1,11 @@
+---
+description: Project conventions for purescript-cardano-capabilities
+globs: "**/*.purs"
+alwaysApply: false
+---
+
+# Project Conventions
+
+Uses **spago.yaml**. Capability-only library (no Halogen components).
+
+Marker type classes + standalone functions; HalogenM instances for use in apps. Document build/test. ReaderT/Ref guidance in halogen-architecture applies to consuming apps, not this library.

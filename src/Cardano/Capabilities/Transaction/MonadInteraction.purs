@@ -38,28 +38,36 @@ instance monadInteractionHalogenM :: (MonadCIP30 m, MonadInteraction m) => Monad
 
 -- | Build an unsigned transaction from an action
 -- | Returns the transaction CBOR as a hex string
-buildTransaction :: 
-  forall m a r. 
-  MonadInteraction m => 
-  EncodeJson a => 
-  DecodeJson a => 
-  DecodeJsonField a =>
-  HasTransactionEnv r -> Api -> a -> m (Either String String)
+buildTransaction
+  :: forall m a r
+   . MonadInteraction m
+  => EncodeJson a
+  => DecodeJson a
+  => DecodeJsonField a
+  => HasTransactionEnv r
+  -> Api
+  -> a
+  -> m (Either String String)
 buildTransaction = buildTransactionDefault
 
 -- | Submit a signed transaction
 -- | Takes the unsigned transaction CBOR and the witness set
 -- | Returns the transaction hash
-submitTransaction :: 
-  forall m r. 
-  MonadInteraction m => 
-  HasTransactionEnv r -> String -> String -> m (Either String String)
+submitTransaction
+  :: forall m r
+   . MonadInteraction m
+  => HasTransactionEnv r
+  -> String
+  -> String
+  -> m (Either String String)
 submitTransaction = submitTransactionDefault
 
 -- | Sign an unsigned transaction
 -- | Returns the witness set as a hex string
-signTransaction :: 
-  forall m. 
-  MonadInteraction m => 
-  Api -> String -> m (Either String String)
+signTransaction
+  :: forall m
+   . MonadInteraction m
+  => Api
+  -> String
+  -> m (Either String String)
 signTransaction = signTransactionDefault
