@@ -145,19 +145,36 @@ getSupportedExtensions = liftEffect <<< Cip30.getSupportedExtensions
 
 -- Helper utility functions
 
--- | Enable a wallet with default CIP-30 extensions
+-- | Enable a wallet, asking for no extensions.
+-- |
+-- | This used to pass `[ { cip: 30 } ]`, which is not a thing a client can ask
+-- | for: CIP-30 defines extensions as capabilities BEYOND itself, and §"enable"
+-- | lists them as objects a wallet may or may not grant. Asking for 30 is at
+-- | best ignored, and it crowded out the extensions a governance client does
+-- | need — 95 and 142 — because the list was not the caller's to choose.
+-- |
+-- | A caller that wants extensions uses `enable` directly and INSPECTS what it
+-- | got back: a wallet may grant none of them and still return an API.
 enableWallet :: forall m. MonadCIP30 m => WalletName -> m Api
-enableWallet wname = enable wname [ { cip: 30 } ]
+enableWallet wname = enable wname []
 
--- | Get human-readable network name
+-- | Get human-readable network name.
+-- |
+-- | CIP-30 §`getNetworkId`: "0 is testnet and 1 is mainnet but other networks
+-- | can possibly be returned". There is no 2, and preprod, preview and a local
+-- | devnet are ALL 0 — so this function cannot name them, and it no longer
+-- | pretends to. It previously answered "Preview" for 0 and "Preprod" for 2,
+-- | which meant every preprod wallet was labelled Preview and no wallet was
+-- | ever labelled Preprod.
+-- |
+-- | Telling the three apart needs the network magic, which is CIP-142.
 getNetworkName :: forall m. MonadCIP30 m => Api -> m String
 getNetworkName api = do
   id <- getNetworkId api
   pure
     $ case id of
         1 -> "Mainnet"
-        0 -> "Preview"
-        2 -> "Preprod"
+        0 -> "A testnet"
         _ -> "Unknown"
 
 -- | Get ADA balance as BigNum (in lovelace)
